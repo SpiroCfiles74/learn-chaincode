@@ -61,7 +61,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 		return nil, err
 	}
 	/*
-		//system test subsection -MVP only
+
 		c0 := Customer{
 			Firstname: `json:"John"`,
 			Lastname:  `json:"Smith"`,
