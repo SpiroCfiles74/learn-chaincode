@@ -17,7 +17,6 @@ limitations under the License.
 package main
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -28,6 +27,7 @@ import (
 type SimpleChaincode struct {
 }
 
+/*
 type Customer struct {
 	Firstname string `json:"firstname"`
 	Lastname  string `json:"lastname"`
@@ -40,7 +40,7 @@ type Customer struct {
 	Dob       string `json:"dob"`
 	ProdID    string `json:"prodID"`
 }
-
+*/
 func main() {
 	err := shim.Start(new(SimpleChaincode))
 	if err != nil {
@@ -50,7 +50,7 @@ func main() {
 
 // Init resets all the things
 func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
-	var key string
+	//var key string
 
 	if len(args) != 1 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 1")
@@ -60,44 +60,40 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	if err != nil {
 		return nil, err
 	}
+	/*
+		//system test subsection -MVP only
+		c0 := Customer{
+			Firstname: `json:"John"`,
+			Lastname:  `json:"Smith"`,
+			Address:   `json:"123 main st."`,
+			City:      `json:"Toronto"`,
+			Provstate: `json:"Ontario"`,
+			Gender:    `json:"male"`,
+			Email:     `json:"js@yahoo.ca"`,
+			Phone:     `json:"416-555-9988"`,
+			Dob:       `json:""`,
+			ProdID:    `json:"0000001A"`,
+		}
 
-	//system test subsection -MVP only
-	c0 := Customer{
-		Firstname: `json:"John"`,
-		Lastname:  `json:"Smith"`,
-		Address:   `json:"123 main st."`,
-		City:      `json:"Toronto"`,
-		Provstate: `json:"Ontario"`,
-		Gender:    `json:"male"`,
-		Email:     `json:"js@yahoo.ca"`,
-		Phone:     `json:"416-555-9988"`,
-		Dob:       `json:""`,
-		ProdID:    `json:"0000001A"`,
-	}
+		store1, err := json.Marshal(c0)
+		err = stub.PutState(key, store1)
+		if err != nil {
+			fmt.Println("error:", err)
+		}
+		fmt.Println("test field in blockchain")
+		fmt.Println(string(store1))
 
-	store1, err := json.Marshal(c0)
-	err = stub.PutState(key, store1)
-	if err != nil {
-		fmt.Println("error:", err)
-	}
-	fmt.Println("test field in blockchain")
-	fmt.Println(string(store1))
+		output, err := stub.GetState(key)
 
-	output, err := stub.GetState(key)
+		c1 := Customer{}
 
-	c1 := Customer{}
+		err = json.Unmarshal(output, &c1)
+		if err != nil {
+			fmt.Println("error:", err)
+		}
 
-	//test two for MVP-sim production
-	//var ProdID2 = "0000021A" //can load with write function, or hardcode below
-	//return t.write(stub, ProdID2)
-
-	err = json.Unmarshal(output, &c1)
-	if err != nil {
-		fmt.Println("error:", err)
-	}
-
-	fmt.Println("BlockChain code output %+v", c1)
-
+		fmt.Println("BlockChain code output %+v", c1)
+	*/
 	return nil, nil
 }
 
