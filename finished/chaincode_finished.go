@@ -27,20 +27,6 @@ import (
 type SimpleChaincode struct {
 }
 
-/*
-type Customer struct {
-	Firstname string `json:"firstname"`
-	Lastname  string `json:"lastname"`
-	Address   string `json:"address"`
-	City      string `json:"city"`
-	Provstate string `json:"provstate"`
-	Gender    string `json:"gender"`
-	Email     string `json:"email"`
-	Phone     string `json:"phone"`
-	Dob       string `json:"dob"`
-	ProdID    string `json:"prodID"`
-}
-*/
 func main() {
 	err := shim.Start(new(SimpleChaincode))
 	if err != nil {
@@ -50,7 +36,6 @@ func main() {
 
 // Init resets all the things
 func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
-	//var key string
 
 	if len(args) != 1 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 1")
@@ -60,40 +45,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	if err != nil {
 		return nil, err
 	}
-	/*
 
-		c0 := Customer{
-			Firstname: `json:"John"`,
-			Lastname:  `json:"Smith"`,
-			Address:   `json:"123 main st."`,
-			City:      `json:"Toronto"`,
-			Provstate: `json:"Ontario"`,
-			Gender:    `json:"male"`,
-			Email:     `json:"js@yahoo.ca"`,
-			Phone:     `json:"416-555-9988"`,
-			Dob:       `json:""`,
-			ProdID:    `json:"0000001A"`,
-		}
-
-		store1, err := json.Marshal(c0)
-		err = stub.PutState(key, store1)
-		if err != nil {
-			fmt.Println("error:", err)
-		}
-		fmt.Println("test field in blockchain")
-		fmt.Println(string(store1))
-
-		output, err := stub.GetState(key)
-
-		c1 := Customer{}
-
-		err = json.Unmarshal(output, &c1)
-		if err != nil {
-			fmt.Println("error:", err)
-		}
-
-		fmt.Println("BlockChain code output %+v", c1)
-	*/
 	return nil, nil
 }
 
@@ -106,8 +58,13 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.Init(stub, "init", args)
 	} else if function == "write" {
 		return t.write(stub, args)
+	} else if function == "delete" {
+		return t.Delete(stub, args)
 	}
 	fmt.Println("invoke did not find func: " + function)
+
+	//test ops
+	stub
 
 	return nil, errors.New("Received unknown function invocation")
 }
@@ -161,4 +118,24 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
 	}
 
 	return valAsbytes, nil
+}
+
+// Delete - remove a key/value pair from state
+func (t *SimpleChaincode) Delete(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	if len(args) != 1 {
+		return nil, errors.New("Incorrect number of arguments. Expecting 1")
+	}
+
+	record := args[0]
+	err := stub.DelState(record) //remove the key from chaincode state
+	if err != nil {
+		return nil, errors.New("Failed to delete state")
+	}
+
+	recordsAsBytes, err := stub.GetState(CMindexstr)
+	if err != nil {
+		return nil, errors.New("Failed to get record index")
+	}
+
+	return nil, nil
 }
