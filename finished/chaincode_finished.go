@@ -132,10 +132,7 @@ func (t *SimpleChaincode) Delete(stub shim.ChaincodeStubInterface, args []string
 		return nil, errors.New("Failed to delete state")
 	}
 
-	recordsAsBytes, err := stub.GetState(CMindexstr)
-	if err != nil {
-		return nil, errors.New("Failed to get record index")
-	}
+	
 
 	return nil, nil
 }
