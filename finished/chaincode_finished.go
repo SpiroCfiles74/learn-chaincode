@@ -64,7 +64,10 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	fmt.Println("invoke did not find func: " + function)
 
 	//test ops
-	stub
+	ID := stub.GetTxID()
+	fmt.Println(ID)
+	A := stub.StateQueryIterator()
+
 
 	return nil, errors.New("Received unknown function invocation")
 }
@@ -131,8 +134,6 @@ func (t *SimpleChaincode) Delete(stub shim.ChaincodeStubInterface, args []string
 	if err != nil {
 		return nil, errors.New("Failed to delete state")
 	}
-
-	
 
 	return nil, nil
 }
