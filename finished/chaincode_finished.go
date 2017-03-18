@@ -66,8 +66,9 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	//test ops
 	ID := stub.GetTxID()
 	fmt.Println(ID)
-	A := stub.StateQueryIterator()
-
+	msg := stub.GetStringArgs()
+	fmt.Println(msg)
+	//A := shim.StateQueryIterator
 
 	return nil, errors.New("Received unknown function invocation")
 }
