@@ -64,12 +64,28 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	fmt.Println("invoke did not find func: " + function)
 
 	//test ops
-	ID := stub.GetTxID()
+	ID, err := stub.GetTxTimestamp()
+	if err != nil {
+		return fmt.Errorf("keys operation failed. Error accessing state: %s", err)
+	}
 	fmt.Println(ID)
 	msg := stub.GetStringArgs()
 	fmt.Println(msg)
 	//A := shim.StateQueryIterator
+	keysIter, err := stub.GetStateByRange(args)
+	if err != nil {
+		return fmt.Errorf("keys operation failed. Error accessing state: %s", err)
+	}
+	defer keysIter.Close()
 
+	var keys []string
+	for keysIter.HasNext() {
+		key, _, iterErr := keysIter.Next()
+		if iterErr != nil {
+			return fmt.errorf("keys operation failed. Error accessing state: %s", err)
+		}
+		keys = append(keys, key)
+	}
 	return nil, errors.New("Received unknown function invocation")
 }
 
