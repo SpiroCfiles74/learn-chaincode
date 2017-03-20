@@ -66,15 +66,18 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	//test ops
 	ID, err := stub.GetTxTimestamp()
 	if err != nil {
-		return fmt.Errorf("keys operation failed. Error accessing state: %s", err)
+		return nil, fmt.Errorf("keys operation failed. Error accessing state: %s", err)
 	}
 	fmt.Println(ID)
 	msg := stub.GetStringArgs()
 	fmt.Println(msg)
 	//A := shim.StateQueryIterator
-	keysIter, err := stub.GetStateByRange(args)
+	for q := range args {
+		keysIter, err := stub.RangeQueryState(args[q], args[q])
+	}
+
 	if err != nil {
-		return fmt.Errorf("keys operation failed. Error accessing state: %s", err)
+		return nil, fmt.Errorf("keys operation failed. Error accessing state: %s", err)
 	}
 	defer keysIter.Close()
 
@@ -82,7 +85,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	for keysIter.HasNext() {
 		key, _, iterErr := keysIter.Next()
 		if iterErr != nil {
-			return fmt.errorf("keys operation failed. Error accessing state: %s", err)
+			return nil, fmt.Errorf("keys operation failed. Error accessing state: %s", err)
 		}
 		keys = append(keys, key)
 	}
