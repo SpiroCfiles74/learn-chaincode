@@ -19,8 +19,10 @@ package main
 import (
 	"errors"
 	"fmt"
+	"bytes"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
+	pb "github.com/hyperledger/fabric/protos/peer"
 )
 
 // SimpleChaincode example simple Chaincode implementation
@@ -71,9 +73,9 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	fmt.Println(ID)
 	msg := stub.GetStringArgs()
 	fmt.Println(msg)
-	
+
 	for q := range args {
-		keysIter, err := stub.RangeQueryState(args[q], args[q])
+		keysIter, err := stub.GetStateByRange(args[0], args[q])
 	}
 
 	if err != nil {
