@@ -74,9 +74,9 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	msg := stub.GetStringArgs()
 	fmt.Println(msg)
 
-	for q := range args {
-		keysIter, err := stub.GetStateByRange(args[0], args[q])
-	}
+	
+		keysIter, err := stub.GetStateByRange(args[0], args[1])
+	
 
 	if err != nil {
 		return nil, fmt.Errorf("keys operation failed. Error accessing state: %s", err)
