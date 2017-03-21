@@ -71,7 +71,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	fmt.Println(ID)
 	msg := stub.GetStringArgs()
 	fmt.Println(msg)
-	//A := shim.StateQueryIterator
+	
 	for q := range args {
 		keysIter, err := stub.RangeQueryState(args[q], args[q])
 	}
