@@ -86,6 +86,16 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		}
 		keys = append(keys, key)
 	}
+
+	resultindex := "namenum"
+	resultindexkey, err := stub.createcompositkey(resultindex, []string{args[0],args[1]})
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	value := []byte{0x00}
+	stub.PutState(resultindexkey, value)
+
 	return nil, errors.New("Received unknown function invocation")
 }
 
@@ -118,6 +128,7 @@ func (t *SimpleChaincode) write(stub shim.ChaincodeStubInterface, args []string)
 	if err != nil {
 		return nil, err
 	}
+	
 	return nil, nil
 }
 
