@@ -99,17 +99,19 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	value := []byte{0x00}
 	stub.PutState(resultindexkey, value)*/
 
-	err = stub.CreateTable("Customer", []*shim.ColumnDefinition{})
+	err = stub.CreateTable("C", []*shim.ColumnDefinition{
+		&shim.ColumnDefinition{Name: "Asset", Type: shim.ColumnDefinition_STRING, Key: true},
+		&shim.ColumnDefinition{Name: "Owner", Type: shim.ColumnDefinition_BYTES, Key: false}})
 	if err != nil {
 		return nil, err
 	}
 
-	err = stub.CreateTable("Manufacture", []*shim.ColumnDefinition{})
+	err = stub.CreateTable("M", []*shim.ColumnDefinition{})
 	if err != nil {
 		return nil, err
 	}
 
-	err = stub.CreateTable("Manufacture", []*shim.ColumnDefinition{})
+	err = stub.CreateTable("A", []*shim.ColumnDefinition{})
 	if err != nil {
 		return nil, err
 	}
