@@ -52,7 +52,10 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 // Invoke isur entry point to invoke a chaincode function
 func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	fmt.Println("invoke is running " + function)
-
+	var tablename, label string
+	var ops bool
+	var data []byte
+	var err error
 	// Handle different functions
 	if function == "init" {
 		return t.Init(stub, "init", args)
@@ -64,15 +67,15 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	fmt.Println("invoke did not find func: " + function)
 
 	//test ops
-	ID, err := stub.GetTxTimestamp()
+	/*ID, err := stub.GetTxTimestamp()
 	if err != nil {
 		return nil, fmt.Errorf("keys operation failed. Error accessing state: %s", err)
 	}
 	fmt.Println(ID)
 	msg := stub.GetStringArgs()
-	fmt.Println(msg)
+	fmt.Println(msg)*/
 
-	keysIter, err := stub.GetStateByRange(args[0], args[1])
+	keysIter, err := stub.RangeQueryState(args[0], args[1])
 	if err != nil {
 		return nil, fmt.Errorf("keys operation failed. Error accessing state: %s", err)
 	}
@@ -87,14 +90,60 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		keys = append(keys, key)
 	}
 
-	resultindex := "namenum"
+	/*resultindex := "namenum"
 	resultindexkey, err := stub.createcompositkey(resultindex, []string{args[0],args[1]})
 	if err != nil {
 		return shim.Error(err.Error())
 	}
 
 	value := []byte{0x00}
-	stub.PutState(resultindexkey, value)
+	stub.PutState(resultindexkey, value)*/
+
+	err = stub.CreateTable("Customer", []*shim.ColumnDefinition{})
+	if err != nil {
+		return nil, err
+	}
+
+	err = stub.CreateTable("Manufacture", []*shim.ColumnDefinition{})
+	if err != nil {
+		return nil, err
+	}
+
+	err = stub.CreateTable("Manufacture", []*shim.ColumnDefinition{})
+	if err != nil {
+		return nil, err
+	}
+
+	tablename = "Customer"
+	/*table, err := stub.GetTable(tablename)
+	if err != nil {
+		return nil, err
+	}
+	//fmt.Printf(table.)outputable*/
+
+	err = stub.DeleteTable(tablename)
+	if err != nil {
+		return nil, err
+	}
+
+	ops, err = stub.InsertRow(tablename, shim.Row{})
+	if !ops && err != nil {
+		return nil, err
+	}
+
+	/*var ca stub.certificate
+	var sign stub.signature
+	var msg []byte
+
+	ops, err = stub.VerifySignature(ca, sign, msg)
+	if err != nil {
+		return nil, err
+	}*/
+
+	err = stub.SetEvent(label, data)
+	if err != nil {
+		return nil, err
+	}
 
 	return nil, errors.New("Received unknown function invocation")
 }
@@ -128,7 +177,7 @@ func (t *SimpleChaincode) write(stub shim.ChaincodeStubInterface, args []string)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return nil, nil
 }
 
