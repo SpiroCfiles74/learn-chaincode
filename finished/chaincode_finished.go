@@ -133,6 +133,11 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return nil, err
 	}
 
+	key []shim.Column
+	Row, err := stub.GetRow(tablename, key)
+	if err != nil {
+		return nil, err
+	}
 	/*var ca stub.certificate
 	var sign stub.signature
 	var msg []byte
