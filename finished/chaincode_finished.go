@@ -171,10 +171,10 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return nil, err
 	}*/
 
-	err = stub.SetEvent(label, data)
+	/*err = stub.SetEvent(label, data)
 	if err != nil {
 		return nil, err
-	}
+	}*/
 
 	return nil, errors.New("Received unknown function invocation")
 }
