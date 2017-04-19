@@ -129,7 +129,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	var columns []shim.Column
 	col1 := shim.Column{Value: &shim.Column_String_{String_: key}}
 	columns = append(columns, col1)
-	Row, err := stub.GetRow(tablename, col1)
+	Row, err := stub.GetRow(tablename, columns)
 	if err != nil {
 		return nil, err
 	}
