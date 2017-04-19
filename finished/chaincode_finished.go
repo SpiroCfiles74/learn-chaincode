@@ -46,16 +46,37 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 		return nil, err
 	}
 
+	err = stub.CreateTable("C", []*shim.ColumnDefinition{
+		&shim.ColumnDefinition{Name: "Asset", Type: shim.ColumnDefinition_STRING, Key: true},
+		&shim.ColumnDefinition{Name: "Owner", Type: shim.ColumnDefinition_BYTES, Key: false},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	err = stub.CreateTable("M", []*shim.ColumnDefinition{
+		&shim.ColumnDefinition{Name: "Name", Type: shim.ColumnDefinition_STRING, Key: true},
+		&shim.ColumnDefinition{Name: "date", Type: shim.ColumnDefinition_BYTES, Key: false},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	err = stub.CreateTable("A", []*shim.ColumnDefinition{
+		&shim.ColumnDefinition{Name: "Member", Type: shim.ColumnDefinition_STRING, Key: true},
+		&shim.ColumnDefinition{Name: "family", Type: shim.ColumnDefinition_BYTES, Key: false},
+	})
+	if err != nil {
+		return nil, err
+	}
+
 	return nil, nil
 }
 
 // Invoke isur entry point to invoke a chaincode function
 func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	fmt.Println("invoke is running " + function)
-	var tablename, label string
-	var ops bool
-	var data []byte
-	var err error
+
 	// Handle different functions
 	if function == "init" {
 		return t.Init(stub, "init", args)
@@ -99,45 +120,47 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	value := []byte{0x00}
 	stub.PutState(resultindexkey, value)*/
 
-	err = stub.CreateTable("C", []*shim.ColumnDefinition{
-		&shim.ColumnDefinition{Name: "Asset", Type: shim.ColumnDefinition_STRING, Key: true},
-		&shim.ColumnDefinition{Name: "Owner", Type: shim.ColumnDefinition_BYTES, Key: false}})
+	table, err := GetTable("C")
 	if err != nil {
-		return nil, err
+		return nil, errors.New(err.Error())
 	}
 
-	err = stub.CreateTable("M", []*shim.ColumnDefinition{})
-	if err != nil {
-		return nil, err
-	}
-
-	err = stub.CreateTable("A", []*shim.ColumnDefinition{})
-	if err != nil {
-		return nil, err
-	}
-
-	tablename = "Customer"
-	/*table, err := stub.GetTable(tablename)
-	if err != nil {
-		return nil, err
-	}
-	//fmt.Printf(table.)outputable*/
-
-	err = stub.DeleteTable(tablename)
-	if err != nil {
-		return nil, err
-	}
-
-	ops, err = stub.InsertRow(tablename, shim.Row{})
-	if !ops && err != nil {
-		return nil, err
-	}
-
-	key []shim.Column
+	var columns []shim.Column
+	col1 := shim.Column{Value: &shim.Column_String_{String_: key}}
+	columns = append(columns, col1)
 	Row, err := stub.GetRow(tablename, key)
 	if err != nil {
 		return nil, err
 	}
+
+	err = stub.DeleteTable("C")
+	if err != nil {
+		return nil, err
+	}
+
+	table2, err := GetTable("C")
+	if err != nil {
+		return nil, errors.New(err.Error())
+	}
+	fmt.Printf(table2)
+
+	state, err := InsertRow("M", shim.Row{
+		Columns: []*shim.Column{
+			&shim.Column{Value: &shim.Column_String_{String_: Name}},
+			&shim.Column{Value: &shim.Column_String_{String_: Date}},
+			&shim.Column{Value: &shim.Column_String_{String_: Family}},
+			&shim.Column{Value: &shim.Column_String_{String_: Member}},
+		}})
+	if !state && err != nil {
+		return nil, err
+	}
+	tablem, err := GetTable("M")
+
+	if err != nil {
+		return nil, errors.New(err.Error())
+	}
+	fmt.Printf(tablem)
+
 	/*var ca stub.certificate
 	var sign stub.signature
 	var msg []byte
