@@ -95,6 +95,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	fmt.Println(ID)
 	msg := stub.GetStringArgs()
 	fmt.Println(msg)*/
+	key := args[0]
 
 	keysIter, err := stub.RangeQueryState(args[0], args[1])
 	if err != nil {
@@ -128,7 +129,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	var columns []shim.Column
 	col1 := shim.Column{Value: &shim.Column_String_{String_: key}}
 	columns = append(columns, col1)
-	Row, err := stub.GetRow(tablename, key)
+	Row, err := stub.GetRow(tablename, col1)
 	if err != nil {
 		return nil, err
 	}
@@ -147,8 +148,8 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	state, err := InsertRow("M", shim.Row{
 		Columns: []*shim.Column{
 			&shim.Column{Value: &shim.Column_String_{String_: Name}},
-			&shim.Column{Value: &shim.Column_String_{String_: Date}},
-			&shim.Column{Value: &shim.Column_String_{String_: Family}},
+			&shim.Column{Value: &shim.Column_String_{String_: date}},
+			&shim.Column{Value: &shim.Column_String_{String_: family}},
 			&shim.Column{Value: &shim.Column_String_{String_: Member}},
 		}})
 	if !state && err != nil {
